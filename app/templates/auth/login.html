@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">Big Jo's</div>
+    <div class="auth-subtitle">Sign in to your account</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        {{ form.email(class="form-control", placeholder="you@example.com") }}
+        {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        {{ form.password(class="form-control", placeholder="••••••••") }}
+        {% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+      </button>
+    </form>
+
+    <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:20px;">
+      No account? <a href="{{ url_for('auth.register') }}" style="color:var(--accent);">Register here</a>
+    </p>
+    <p style="text-align:center;margin-top:8px;">
+      <a href="{{ url_for('main.home') }}" style="color:var(--muted);font-size:12px;">← Back to home</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

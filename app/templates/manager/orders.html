@@ -1,0 +1,67 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}Purchase Orders{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Purchase Orders</div>
+    <div class="page-subtitle">Track all orders placed with suppliers</div>
+  </div>
+  <a href="{{ url_for('manager.new_order') }}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> New Order
+  </a>
+</div>
+
+<!-- Status filter tabs -->
+<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+  {% for s in ['','Pending','Submitted','Confirmed','Dispatched','Delivered','Rejected'] %}
+  <a href="{{ url_for('manager.orders', status=s) }}"
+     class="btn btn-sm {% if status_filter == s %}btn-primary{% else %}btn-outline{% endif %}">
+    {{ s or 'All' }}
+  </a>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order #</th>
+          <th>Supplier</th>
+          <th>Date</th>
+          <th>Delivery</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td><strong>#{{ order.id }}</strong></td>
+          <td>{{ order.supplier.company_name }}</td>
+          <td>{{ order.order_date.strftime('%d %b %Y') }}</td>
+          <td>
+            {% if order.delivery_date %}
+              {{ order.delivery_date.strftime('%d %b %Y') }}
+            {% else %}
+              <span style="color:var(--muted)">TBC</span>
+            {% endif %}
+          </td>
+          <td style="font-weight:600;">R {{ "%.2f"|format(order.total_amount) }}</td>
+          <td><span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></td>
+          <td>
+            <a href="{{ url_for('manager.order_detail', order_id=order.id) }}" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-eye"></i> View
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px;">No orders found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

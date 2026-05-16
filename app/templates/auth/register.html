@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block body %}
+<div class="auth-page">
+  <div class="auth-card" style="max-width:520px;">
+    <div class="auth-logo">Big Jo's</div>
+    <div class="auth-subtitle">Create your account</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          {{ form.name(class="form-control", placeholder="John Dlamini") }}
+          {% for e in form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          {{ form.phone(class="form-control", placeholder="+27 ...") }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        {{ form.email(class="form-control", placeholder="you@example.com") }}
+        {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Register As</label>
+        {{ form.role(class="form-control") }}
+      </div>
+
+      <div id="supplier-fields" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Company Name</label>
+          {{ form.company_name(class="form-control", placeholder="ABC Fresh Produce") }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Region</label>
+          {{ form.region(class="form-control", placeholder="KwaZulu-Natal") }}
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          {{ form.password(class="form-control", placeholder="Min 6 characters") }}
+          {% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          {{ form.confirm_password(class="form-control", placeholder="Repeat password") }}
+          {% for e in form.confirm_password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </button>
+    </form>
+
+    <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:20px;">
+      Already registered? <a href="{{ url_for('auth.login') }}" style="color:var(--accent);">Login here</a>
+    </p>
+  </div>
+</div>
+<script>
+  const roleSelect = document.querySelector('select[name="role"]');
+  const supplierFields = document.getElementById('supplier-fields');
+  function toggleFields() {
+    supplierFields.style.display = roleSelect.value === 'supplier' ? 'block' : 'none';
+  }
+  roleSelect.addEventListener('change', toggleFields);
+  toggleFields();
+</script>
+{% endblock %}

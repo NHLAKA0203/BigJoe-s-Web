@@ -1,0 +1,92 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Supplier Dashboard{% endblock %}
+{% block page_title %}Supplier Dashboard{% endblock %}
+{% block content %}
+<div class="mb-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  <div class="overflow-hidden rounded-lg border border-line bg-panel p-5 shadow-soft">
+    <div class="h-1 w-14 rounded-full bg-gold"></div>
+    <div class="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Company</div>
+    <div class="mt-2 text-lg font-semibold leading-snug text-slate-100">{{ supplier.company_name }}</div>
+    <div class="mt-1 text-xs text-slate-500">{{ supplier.region or 'Region not set' }}</div>
+  </div>
+  <div class="overflow-hidden rounded-lg border border-line bg-panel p-5 shadow-soft">
+    <div class="h-1 w-14 rounded-full bg-gold"></div>
+    <div class="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">New Orders</div>
+    <div class="mt-2 font-serif text-4xl leading-none text-slate-100">{{ pending }}</div>
+    <div class="mt-2 text-xs text-slate-500">Awaiting your response</div>
+  </div>
+  <div class="overflow-hidden rounded-lg border border-line bg-panel p-5 shadow-soft">
+    <div class="h-1 w-14 rounded-full bg-good"></div>
+    <div class="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Confirmed</div>
+    <div class="mt-2 font-serif text-4xl leading-none text-slate-100">{{ confirmed }}</div>
+    <div class="mt-2 text-xs text-slate-500">Active orders</div>
+  </div>
+  <div class="overflow-hidden rounded-lg border border-line bg-panel p-5 shadow-soft">
+    <div class="h-1 w-14 rounded-full bg-info"></div>
+    <div class="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Delivered</div>
+    <div class="mt-2 font-serif text-4xl leading-none text-slate-100">{{ delivered }}</div>
+    <div class="mt-2 text-xs text-slate-500">Completed this period</div>
+  </div>
+</div>
+
+<div class="grid gap-5 xl:grid-cols-2">
+  <div class="rounded-lg border border-line bg-panel p-6 shadow-soft">
+    <div class="mb-4 flex items-center justify-between gap-3">
+      <h2 class="font-serif text-lg text-slate-100">Recent Orders</h2>
+      <a href="{{ url_for('supplier.orders') }}" class="text-xs font-semibold text-gold transition hover:text-gold2">View all</a>
+    </div>
+    {% if recent_orders %}
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse text-sm">
+        <thead>
+          <tr class="border-b border-line text-left text-[11px] uppercase tracking-wider text-slate-500">
+            <th class="px-4 py-3 font-semibold">#</th>
+            <th class="px-4 py-3 font-semibold">Date</th>
+            <th class="px-4 py-3 font-semibold">Total</th>
+            <th class="px-4 py-3 font-semibold">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line/70">
+          {% for order in recent_orders %}
+          <tr class="transition hover:bg-white/[0.02]">
+            <td class="px-4 py-3"><a href="{{ url_for('supplier.order_detail', order_id=order.id) }}" class="font-semibold text-gold hover:text-gold2">#{{ order.id }}</a></td>
+            <td class="px-4 py-3 text-slate-300">{{ order.order_date.strftime('%d %b %Y') }}</td>
+            <td class="px-4 py-3 text-slate-100">R {{ "%.2f"|format(order.total_amount) }}</td>
+            <td class="px-4 py-3"><span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="flex min-h-48 flex-col items-center justify-center rounded-lg border border-dashed border-line px-6 py-12 text-center text-slate-500">
+      <i class="fa-regular fa-clipboard text-4xl opacity-50"></i>
+      <p class="mt-3 text-sm">No orders yet</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="rounded-lg border border-line bg-panel p-6 shadow-soft">
+    <h2 class="mb-4 font-serif text-lg text-slate-100">Quick Links</h2>
+    <div class="flex flex-col gap-3">
+      <a href="{{ url_for('supplier.orders', status='Submitted') }}" class="inline-flex items-center justify-center gap-2 rounded-lg bg-gold px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-gold2">
+        <i class="fa-solid fa-inbox"></i> View Pending Orders ({{ pending }})
+      </a>
+      <a href="{{ url_for('supplier.products') }}" class="inline-flex items-center justify-center gap-2 rounded-lg border border-line px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-gold hover:text-gold">
+        <i class="fa-solid fa-leaf"></i> Manage Products
+      </a>
+      <a href="{{ url_for('supplier.new_product') }}" class="inline-flex items-center justify-center gap-2 rounded-lg border border-line px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-gold hover:text-gold">
+        <i class="fa-solid fa-plus"></i> Add New Product
+      </a>
+    </div>
+    {% if notifications %}
+    <div class="mt-6">
+      <div class="mb-3 text-sm font-semibold text-slate-100">Notifications</div>
+      {% for n in notifications %}
+      <div class="alert alert-{{ n.type }} text-sm">{{ n.message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

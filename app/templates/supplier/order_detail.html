@@ -1,0 +1,98 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+{% block page_title %}Order #{{ order.id }}{% endblock %}
+{% block content %}
+<div style="margin-bottom:20px;">
+  <a href="{{ url_for('supplier.orders') }}" class="btn btn-outline btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back
+  </a>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+  <div class="card">
+    <div class="card-title">Order Items</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th><th>Qty</th><th>Unit Cost</th><th>Line Total</th></tr></thead>
+        <tbody>
+          {% for line in order.lines %}
+          <tr>
+            <td>{{ line.product.name }}</td>
+            <td>{{ line.quantity }} {{ line.product.unit_of_measure }}</td>
+            <td>R {{ "%.2f"|format(line.agreed_unit_cost) }}</td>
+            <td style="font-weight:600;">R {{ "%.2f"|format(line.line_total) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align:right;font-weight:600;padding:12px 16px;">Total</td>
+            <td style="font-weight:700;color:var(--accent);">R {{ "%.2f"|format(order.total_amount) }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Details</div>
+      <div style="font-size:13px;color:var(--muted);line-height:2.2;">
+        <div><strong style="color:var(--text);">Status</strong><br>
+          <span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></div>
+        <div style="margin-top:10px;"><strong style="color:var(--text);">Ordered</strong><br>
+          {{ order.order_date.strftime('%d %b %Y %H:%M') }}</div>
+        {% if order.delivery_date %}
+        <div style="margin-top:10px;"><strong style="color:var(--text);">Delivery Date</strong><br>
+          {{ order.delivery_date.strftime('%d %b %Y') }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Confirm/Reject for Submitted orders -->
+    {% if order.status == 'Submitted' %}
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title" style="font-size:14px;">Confirm Order</div>
+      <form method="POST" action="{{ url_for('supplier.confirm_order', order_id=order.id) }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          <label class="form-label">Estimated Delivery Date</label>
+          {{ form.delivery_date(class="form-control") }}
+          {% for e in form.delivery_date.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <button type="submit" class="btn btn-success" style="width:100%;justify-content:center;">
+          <i class="fa-solid fa-check"></i> Confirm
+        </button>
+      </form>
+    </div>
+    <form method="POST" action="{{ url_for('supplier.reject_order', order_id=order.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center;">
+        <i class="fa-solid fa-xmark"></i> Reject Order
+      </button>
+    </form>
+    {% endif %}
+
+    <!-- Update delivery status -->
+    {% if order.status in ['Confirmed', 'Dispatched'] %}
+    <div class="card">
+      <div class="card-title" style="font-size:14px;">Update Status</div>
+      <form method="POST" action="{{ url_for('supplier.update_status', order_id=order.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          {% if order.status == 'Confirmed' %}
+          <button type="submit" name="status" value="Dispatched" class="btn btn-outline">
+            <i class="fa-solid fa-truck"></i> Mark as Dispatched
+          </button>
+          {% elif order.status == 'Dispatched' %}
+          <button type="submit" name="status" value="Delivered" class="btn btn-success">
+            <i class="fa-solid fa-circle-check"></i> Mark as Delivered
+          </button>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block body %}
+<div class="home-page">
+  <nav class="home-nav">
+    <span class="brand">Big Jo's</span>
+    <div class="nav-links">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-outline btn-sm">Login</a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Register</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-eyebrow">Big Jo's Shawarma — Berea Centre</p>
+    <h1>Smarter Supply Chain.<br><em>Fresher Kitchen.</em></h1>
+    <p>A digital platform that connects Big Jo's to multiple suppliers, automates inventory alerts, and delivers real-time financial insights.</p>
+    <div class="hero-cta">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-outline">Create Account</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🛒</div>
+      <div class="feature-title">Supplier Directory</div>
+      <div class="feature-desc">Browse and compare multiple suppliers by price, rating, and delivery speed. End single-supplier dependency.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <div class="feature-title">Inventory Automation</div>
+      <div class="feature-desc">Real-time stock tracking with automatic low-stock alerts and reorder suggestions before your kitchen runs dry.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <div class="feature-title">Purchase Orders</div>
+      <div class="feature-desc">Create and submit digital purchase orders. Suppliers confirm, dispatch, and update delivery status in one place.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Financial Reports</div>
+      <div class="feature-desc">Automated COGS calculations, wastage tracking, supplier spend summaries, and profit/loss reports. Export to CSV.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <div class="feature-title">Smart Notifications</div>
+      <div class="feature-desc">Instant alerts for low stock, late deliveries, order confirmations, and supplier price changes.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <div class="feature-title">Role-Based Access</div>
+      <div class="feature-desc">Separate secure portals for Managers and Suppliers. Each role sees only what they need.</div>
+    </div>
+  </section>
+
+  <footer class="home-footer">
+    &copy; 2026 Big Jo's Restaurant · DUT Financial Accounting 2 Project
+  </footer>
+</div>
+{% endblock %}

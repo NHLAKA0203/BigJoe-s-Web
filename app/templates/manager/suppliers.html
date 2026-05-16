@@ -1,0 +1,68 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Suppliers{% endblock %}
+{% block page_title %}Supplier Directory{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Suppliers</div>
+    <div class="page-subtitle">Browse and compare registered suppliers</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" style="display:flex;gap:12px;align-items:flex-end;">
+    <div class="form-group" style="flex:1;margin:0;">
+      <label class="form-label">Search Suppliers</label>
+      <input name="q" class="form-control" placeholder="Company name or region..." value="{{ q }}">
+    </div>
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-magnifying-glass"></i> Search
+    </button>
+    {% if q %}
+    <a href="{{ url_for('manager.suppliers') }}" class="btn btn-outline">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+{% if suppliers %}
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+  {% for s in suppliers %}
+  <div class="card" style="padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+      <div>
+        <div style="font-family:'DM Serif Display',serif;font-size:18px;">{{ s.company_name }}</div>
+        <div style="color:var(--muted);font-size:12px;margin-top:2px;">
+          <i class="fa-solid fa-location-dot"></i> {{ s.region or 'Region not set' }}
+        </div>
+      </div>
+      <div style="display:flex;gap:2px;">
+        {% for i in range(5) %}
+          {% if i < s.rating|int %}
+            <span style="color:var(--accent);">★</span>
+          {% else %}
+            <span style="color:var(--border);">★</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:16px;">
+      {{ s.products.count() }} product(s) listed
+    </div>
+    <div style="display:flex;gap:8px;">
+      <a href="{{ url_for('manager.supplier_detail', supplier_id=s.id) }}" class="btn btn-outline btn-sm">
+        <i class="fa-solid fa-eye"></i> View Catalogue
+      </a>
+      <a href="{{ url_for('manager.new_order') }}" class="btn btn-primary btn-sm">
+        <i class="fa-solid fa-cart-plus"></i> Order
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="icon">🏪</div>
+  <p>No suppliers found{% if q %} matching "{{ q }}"{% endif %}</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<div style="margin-bottom:20px;">
+  <a href="{{ url_for('supplier.products') }}" class="btn btn-outline btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back to Products
+  </a>
+</div>
+<div class="card" style="max-width:520px;">
+  <div class="card-title">{{ title }}</div>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Product Name</label>
+        {{ form.name(class="form-control", placeholder="e.g. Potatoes") }}
+        {% for e in form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        {{ form.category(class="form-control", placeholder="e.g. Vegetables") }}
+        {% for e in form.category.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Unit Cost (R)</label>
+        {{ form.unit_cost(class="form-control", placeholder="0.00") }}
+        {% for e in form.unit_cost.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Unit of Measure</label>
+        {{ form.unit_of_measure(class="form-control") }}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Shelf Life (days)</label>
+      {{ form.shelf_life_days(class="form-control", placeholder="7") }}
+    </div>
+    <div class="form-group">
+      <div class="check-wrap">
+        {{ form.available() }}
+        <label style="color:var(--text);font-size:14px;">Product is available for ordering</label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-floppy-disk"></i> {{ title }}
+    </button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Notifications{% endblock %}
+{% block page_title %}Notifications{% endblock %}
+{% block content %}
+<div class="card">
+  {% if notifications %}
+    {% for n in notifications %}
+    <div class="alert alert-{{ n.type }}" style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <span>{{ n.message }}</span>
+        <span style="font-size:11px;color:var(--muted);white-space:nowrap;margin-left:16px;">
+          {{ n.sent_at.strftime('%d %b %Y %H:%M') }}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">🔔</div>
+    <p>No notifications yet</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

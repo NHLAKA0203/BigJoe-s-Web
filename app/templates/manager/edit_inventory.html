@@ -1,0 +1,29 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Edit Inventory{% endblock %}
+{% block page_title %}Edit Inventory{% endblock %}
+{% block content %}
+<div style="margin-bottom:20px;">
+  <a href="{{ url_for('manager.inventory') }}" class="btn btn-outline btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back to Inventory
+  </a>
+</div>
+<div class="card" style="max-width:480px;">
+  <div class="card-title">Update: {{ item.product.name }}</div>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label class="form-label">Quantity On Hand ({{ item.product.unit_of_measure }})</label>
+      {{ form.qty_on_hand(class="form-control") }}
+      {% for e in form.qty_on_hand.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+    </div>
+    <div class="form-group">
+      <label class="form-label">Reorder Level</label>
+      {{ form.reorder_level(class="form-control") }}
+      {% for e in form.reorder_level.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-floppy-disk"></i> Save Changes
+    </button>
+  </form>
+</div>
+{% endblock %}

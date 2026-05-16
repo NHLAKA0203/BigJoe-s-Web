@@ -1,0 +1,45 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}Orders{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Incoming Orders</div>
+    <div class="page-subtitle">Confirm, reject, or update delivery status</div>
+  </div>
+</div>
+
+<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+  {% for s in ['','Submitted','Confirmed','Dispatched','Delivered','Rejected'] %}
+  <a href="{{ url_for('supplier.orders', status=s) }}"
+     class="btn btn-sm {% if status_filter == s %}btn-primary{% else %}btn-outline{% endif %}">
+    {{ s or 'All' }}
+  </a>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Order #</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td><strong>#{{ order.id }}</strong></td>
+          <td>{{ order.order_date.strftime('%d %b %Y') }}</td>
+          <td style="font-weight:600;">R {{ "%.2f"|format(order.total_amount) }}</td>
+          <td><span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></td>
+          <td>
+            <a href="{{ url_for('supplier.order_detail', order_id=order.id) }}" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-eye"></i> Manage
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:40px;">No orders found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

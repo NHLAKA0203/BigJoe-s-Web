@@ -1,0 +1,97 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}Financial Reports{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Financial Reports</div>
+    <div class="page-subtitle">COGS, supplier spend, and order summaries</div>
+  </div>
+</div>
+
+<div class="card" style="max-width:500px;margin-bottom:28px;">
+  <div class="card-title">Generate Report</div>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Start Date</label>
+        {{ form.start_date(class="form-control") }}
+        {% for e in form.start_date.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label class="form-label">End Date</label>
+        {{ form.end_date(class="form-control") }}
+        {% for e in form.end_date.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-chart-bar"></i> Generate
+    </button>
+  </form>
+</div>
+
+{% if report_data %}
+<div class="stat-grid" style="margin-bottom:24px;">
+  <div class="stat-card">
+    <div class="stat-label">Period</div>
+    <div class="stat-value" style="font-size:16px;">{{ report_data.start.strftime('%d %b') }} – {{ report_data.end.strftime('%d %b %Y') }}</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-label">Total COGS</div>
+    <div class="stat-value" style="font-size:26px;">R {{ "%.2f"|format(report_data.total_cogs) }}</div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-label">Delivered Orders</div>
+    <div class="stat-value">{{ report_data.order_count }}</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <!-- By Supplier -->
+  <div class="card">
+    <div class="card-title">Spend by Supplier</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Supplier</th><th>Amount</th></tr></thead>
+        <tbody>
+          {% for name, amount in report_data.by_supplier.items() %}
+          <tr>
+            <td>{{ name }}</td>
+            <td style="color:var(--accent);font-weight:600;">R {{ "%.2f"|format(amount) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Order list -->
+  <div class="card">
+    <div class="card-title">Delivered Orders</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Supplier</th><th>Date</th><th>Total</th></tr></thead>
+        <tbody>
+          {% for o in report_data.orders %}
+          <tr>
+            <td>#{{ o.id }}</td>
+            <td>{{ o.supplier.company_name }}</td>
+            <td>{{ o.order_date.strftime('%d %b') }}</td>
+            <td style="font-weight:600;">R {{ "%.2f"|format(o.total_amount) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:20px;">
+  <a href="{{ url_for('manager.export_csv', start=report_data.start.strftime('%Y-%m-%d'), end=report_data.end.strftime('%Y-%m-%d')) }}"
+     class="btn btn-outline">
+    <i class="fa-solid fa-download"></i> Export CSV
+  </a>
+</div>
+{% endif %}
+{% endblock %}

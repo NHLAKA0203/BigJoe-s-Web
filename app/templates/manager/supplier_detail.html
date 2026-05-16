@@ -1,0 +1,68 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}{{ supplier.company_name }}{% endblock %}
+{% block page_title %}{{ supplier.company_name }}{% endblock %}
+{% block content %}
+<div style="margin-bottom:20px;">
+  <a href="{{ url_for('manager.suppliers') }}" class="btn btn-outline btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back to Suppliers
+  </a>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-family:'DM Serif Display',serif;font-size:24px;">{{ supplier.company_name }}</div>
+      <div style="color:var(--muted);margin-top:4px;">
+        <i class="fa-solid fa-location-dot"></i> {{ supplier.region or 'No region' }} &nbsp;|&nbsp;
+        <i class="fa-solid fa-star" style="color:var(--accent)"></i> {{ supplier.rating }}/5
+      </div>
+    </div>
+    <a href="{{ url_for('manager.new_order') }}" class="btn btn-primary">
+      <i class="fa-solid fa-file-invoice"></i> Place Order
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Product Catalogue</div>
+  {% if products %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Unit Cost</th>
+          <th>Unit</th>
+          <th>Shelf Life</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td><strong>{{ p.name }}</strong></td>
+          <td>{{ p.category }}</td>
+          <td style="color:var(--accent);font-weight:600;">R {{ "%.2f"|format(p.unit_cost) }}</td>
+          <td>{{ p.unit_of_measure }}</td>
+          <td>{{ p.shelf_life_days }} days</td>
+          <td>
+            {% if p.available %}
+              <span class="pill pill-confirmed">Available</span>
+            {% else %}
+              <span class="pill pill-rejected">Unavailable</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">📦</div>
+    <p>No products listed by this supplier</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

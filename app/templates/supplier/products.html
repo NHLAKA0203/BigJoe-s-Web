@@ -1,0 +1,55 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}My Products{% endblock %}
+{% block page_title %}My Products{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Product Catalogue</div>
+    <div class="page-subtitle">Manage your listed products and pricing</div>
+  </div>
+  <a href="{{ url_for('supplier.new_product') }}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> Add Product
+  </a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Product</th><th>Category</th><th>Unit Cost</th><th>Unit</th><th>Shelf Life</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td><strong>{{ p.name }}</strong></td>
+          <td>{{ p.category }}</td>
+          <td style="color:var(--accent);font-weight:600;">R {{ "%.2f"|format(p.unit_cost) }}</td>
+          <td>{{ p.unit_of_measure }}</td>
+          <td>{{ p.shelf_life_days }} days</td>
+          <td>
+            {% if p.available %}
+              <span class="pill pill-confirmed">Available</span>
+            {% else %}
+              <span class="pill pill-rejected">Unavailable</span>
+            {% endif %}
+          </td>
+          <td style="display:flex;gap:6px;">
+            <a href="{{ url_for('supplier.edit_product', product_id=p.id) }}" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-pen"></i>
+            </a>
+            <form method="POST" action="{{ url_for('supplier.delete_product', product_id=p.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this product?')">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px;">No products listed yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
