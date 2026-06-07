@@ -1,102 +1,149 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="min-h-screen bg-ink text-slate-100 md:pl-[250px]">
+<div class="flex min-h-screen bg-cream">
 
-  <aside class="fixed inset-y-0 left-0 z-50 flex w-[250px] -translate-x-full flex-col overflow-y-auto border-r border-line bg-panel pb-6 transition-transform duration-200 md:translate-x-0" id="sidebar">
-    <div class="border-b border-line px-5 pb-5 pt-7">
-      <div class="font-serif text-[22px] leading-tight text-gold">Big Jo's</div>
-      <div class="mt-1 text-[10px] uppercase tracking-[0.2em] text-slate-500">Supplier System</div>
+  <!-- Sidebar -->
+  <aside id="sidebar"
+         class="fixed inset-y-0 left-0 z-50 flex w-[260px] -translate-x-full flex-col overflow-y-auto
+                border-r-[3px] border-gold bg-brand pb-6
+                shadow-[4px_0_20px_rgba(200,16,46,.18)] transition-transform duration-200 md:translate-x-0"
+         style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0px,rgba(255,255,255,.03) 1px,transparent 1px,transparent 10px)">
+
+    <!-- Brand -->
+    <div class="border-b-2 border-white/20 bg-black/10 px-5 pb-[18px] pt-6">
+      <div class="font-display text-[30px] leading-none tracking-[2px] text-white"
+           style="text-shadow:0 2px 6px rgba(0,0,0,.3)">Big Jo's</div>
+      <div class="mt-0.5 text-[9px] font-bold uppercase tracking-[3px] text-gold2">Supplier System</div>
     </div>
 
-    <nav class="flex-1 space-y-1 px-3 py-4">
+    <!-- Nav links -->
+    <nav class="flex-1 space-y-0.5 px-3 py-4">
       {% if current_user.role in ('manager','admin') %}
-      <div class="px-2 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Overview</div>
+
+      <div class="px-2.5 pb-1.5 pt-3 text-[9px] font-bold uppercase tracking-[2.5px] text-white/50">Overview</div>
       <a href="{{ url_for('manager.dashboard') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if request.endpoint == 'manager.dashboard' %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if request.endpoint == 'manager.dashboard' %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-gauge"></i></span> Dashboard
       </a>
 
-      <div class="px-2 pb-1 pt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Procurement</div>
+      <div class="px-2.5 pb-1.5 pt-4 text-[9px] font-bold uppercase tracking-[2.5px] text-white/50">Procurement</div>
       <a href="{{ url_for('manager.suppliers') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if 'suppliers' in request.endpoint %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'suppliers' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-truck"></i></span> Suppliers
       </a>
       <a href="{{ url_for('manager.orders') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if 'orders' in request.endpoint %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'orders' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-file-invoice"></i></span> Purchase Orders
       </a>
       <a href="{{ url_for('manager.inventory') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if 'inventory' in request.endpoint %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'inventory' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-boxes-stacked"></i></span> Inventory
       </a>
 
-      <div class="px-2 pb-1 pt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Finance</div>
+      <div class="px-2.5 pb-1.5 pt-4 text-[9px] font-bold uppercase tracking-[2.5px] text-white/50">Finance</div>
       <a href="{{ url_for('manager.reports') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if 'reports' in request.endpoint %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'reports' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-chart-line"></i></span> Reports
       </a>
       <a href="{{ url_for('manager.notifications') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if 'notifications' in request.endpoint %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'notifications' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-bell"></i></span> Notifications
       </a>
 
       {% elif current_user.role == 'supplier' %}
-      <div class="px-2 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Overview</div>
+
+      <div class="px-2.5 pb-1.5 pt-3 text-[9px] font-bold uppercase tracking-[2.5px] text-white/50">Overview</div>
       <a href="{{ url_for('supplier.dashboard') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if request.endpoint == 'supplier.dashboard' %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if request.endpoint == 'supplier.dashboard' %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-gauge"></i></span> Dashboard
       </a>
 
-      <div class="px-2 pb-1 pt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Catalogue</div>
+      <div class="px-2.5 pb-1.5 pt-4 text-[9px] font-bold uppercase tracking-[2.5px] text-white/50">Catalogue</div>
       <a href="{{ url_for('supplier.products') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if 'products' in request.endpoint %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'products' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-leaf"></i></span> My Products
       </a>
 
-      <div class="px-2 pb-1 pt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Orders</div>
+      <div class="px-2.5 pb-1.5 pt-4 text-[9px] font-bold uppercase tracking-[2.5px] text-white/50">Orders</div>
       <a href="{{ url_for('supplier.orders') }}"
-         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if 'orders' in request.endpoint %}bg-gold/10 text-gold{% else %}text-slate-400 hover:bg-panel2 hover:text-slate-100{% endif %}">
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'orders' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-list-check"></i></span> Orders
       </a>
+
       {% endif %}
     </nav>
 
-    <div class="mx-5 border-t border-line pt-4 text-sm">
-      <div class="font-semibold text-slate-100">{{ current_user.name }}</div>
-      <div class="mt-1 text-[11px] uppercase tracking-wider text-gold">{{ current_user.role }}</div>
-      <a href="{{ url_for('auth.logout') }}" class="mt-2 block text-xs text-slate-500 transition hover:text-gold">
+    <!-- User -->
+    <div class="border-t-2 border-white/20 bg-black/10 px-5 py-4 text-[13px]">
+      <div class="font-bold text-white">{{ current_user.name }}</div>
+      <div class="mt-0.5 text-[10px] font-bold uppercase tracking-[1.5px] text-gold2">{{ current_user.role }}</div>
+      <a href="{{ url_for('auth.logout') }}" class="mt-2 block text-xs text-white/60 transition hover:text-white">
         <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out
       </a>
     </div>
   </aside>
 
-  <div class="flex min-h-screen flex-col">
-    <header class="sticky top-0 z-40 flex items-center justify-between border-b border-line bg-panel px-4 py-3 md:px-8">
+  <!-- Main -->
+  <div class="flex min-h-screen w-full flex-col md:ml-[260px]">
+
+    <!-- Topbar -->
+    <header class="sticky top-0 z-40 flex items-center justify-between border-b-2 border-warm
+                   bg-white px-4 py-3.5 shadow-[0_2px_12px_rgba(200,16,46,.07)] md:px-8">
       <div class="flex items-center gap-3">
         <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-panel2 text-slate-200 transition hover:border-gold hover:text-gold md:hidden" id="menu-btn">
+                class="inline-flex h-10 w-10 items-center justify-center rounded-[10px]
+                       border-2 border-warm bg-cream2 text-muted transition
+                       hover:border-brand hover:text-brand md:hidden">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <span class="font-serif text-xl text-slate-100">{% block page_title %}{% endblock %}</span>
+        <span class="font-display text-[22px] tracking-[1.5px] text-brand">
+          {% block page_title %}{% endblock %}
+        </span>
       </div>
       <div class="flex items-center gap-3">
         {% set unread = current_user.notifications.filter_by(is_read=False).count() %}
         {% if current_user.role in ('manager','admin') %}
-        <a href="{{ url_for('manager.notifications') }}" class="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-panel2 text-slate-400 transition hover:border-gold hover:text-slate-100">
-          <i class="fa-solid fa-bell"></i>
-          {% if unread > 0 %}<span class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] font-bold text-white">{{ unread }}</span>{% endif %}
+        <a href="{{ url_for('manager.notifications') }}"
+           class="relative inline-flex h-[38px] w-[38px] items-center justify-center rounded-full
+                  border-2 border-warm bg-cream2 text-muted transition
+                  hover:border-brand hover:text-brand hover:bg-brand/5">
+          <i class="fa-solid fa-bell text-[15px]"></i>
+          {% if unread > 0 %}
+          <span class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center
+                       rounded-full bg-brand text-[10px] font-extrabold text-white">
+            {{ unread }}
+          </span>
+          {% endif %}
         </a>
         {% endif %}
       </div>
     </header>
 
-    <main class="flex-1 px-4 py-6 md:px-8">
+    <!-- Content -->
+    <main class="flex-1 p-8">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
           <div class="alert alert-{{ category }}">{{ message }}</div>
         {% endfor %}
       {% endwith %}
-
       {% block content %}{% endblock %}
     </main>
   </div>

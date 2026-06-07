@@ -1,60 +1,137 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
 {% block body %}
-<div class="home-page">
-  <nav class="home-nav">
-    <span class="brand">Big Jo's</span>
-    <div class="nav-links">
-      <a href="{{ url_for('auth.login') }}" class="btn btn-outline btn-sm">Login</a>
-      <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Register</a>
+<div class="min-h-screen bg-cream">
+
+  <!-- Nav -->
+  <nav class="flex items-center justify-between px-[60px] h-[72px] bg-brand border-b-[3px] border-gold
+              shadow-[0_4px_20px_rgba(200,16,46,.25)]"
+       style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0px,rgba(255,255,255,.04) 1px,transparent 1px,transparent 12px)">
+    <div class="flex items-center gap-3">
+      <img src="{{ url_for('static', filename='images/bbig-jos-feature.jpg') }}"
+           alt="Big Jo's Logo"
+           class="h-12 w-12 rounded-full border-2 border-gold object-cover">
+      <span class="font-display text-[32px] tracking-[3px] text-white"
+            style="text-shadow:0 2px 8px rgba(0,0,0,.25)">
+        Big <span class="text-gold2">Jo's</span>
+      </span>
+    </div>
+    <div class="flex gap-3">
+      <a href="{{ url_for('auth.login') }}"
+         class="btn btn-sm border-2 border-white/40 bg-transparent text-white hover:bg-white/10 hover:border-white">
+        Login
+      </a>
+      <a href="{{ url_for('auth.register') }}"
+         class="btn btn-sm bg-gold text-ink hover:bg-gold2">
+        Register
+      </a>
     </div>
   </nav>
 
-  <section class="hero">
-    <p class="hero-eyebrow">Big Jo's Shawarma — Berea Centre</p>
-    <h1>Smarter Supply Chain.<br><em>Fresher Kitchen.</em></h1>
-    <p>A digital platform that connects Big Jo's to multiple suppliers, automates inventory alerts, and delivers real-time financial insights.</p>
-    <div class="hero-cta">
-      <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Get Started <i class="fa-solid fa-arrow-right"></i></a>
-      <a href="{{ url_for('auth.register') }}" class="btn btn-outline">Create Account</a>
+  <!-- Hero -->
+  <section class="hero flex flex-col items-center justify-center text-center px-10 py-[80px]">
+    <p class="mb-5 text-[15px] font-extrabold uppercase tracking-[3px] text-brand">
+      <i class="fa-solid "></i> Big Jo's Shawarma — Berea Centre, Durban
+    </p>
+    <h1 class="font-display text-[clamp(48px,7vw,84px)] leading-[1.0] tracking-[2px] text-ink max-w-[750px]">
+      Smarter Supply Chain.<br><em class="not-italic text-brand">Fresher Kitchen.</em>
+    </h1>
+    <p class="mx-auto mt-6 mb-10 max-w-[520px] text-[20px] font-semibold leading-[1.7] text-muted">
+      A digital platform that connects Big Jo's to multiple suppliers, automates inventory alerts,
+      and delivers real-time financial insights.
+    </p>
+    <div class="flex gap-3 justify-center">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+        Get Started <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-outline">
+        Create Account
+      </a>
     </div>
   </section>
 
-  <section class="features">
-    <div class="feature-card">
-      <div class="feature-icon">🛒</div>
-      <div class="feature-title">Supplier Directory</div>
-      <div class="feature-desc">Browse and compare multiple suppliers by price, rating, and delivery speed. End single-supplier dependency.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📦</div>
-      <div class="feature-title">Inventory Automation</div>
-      <div class="feature-desc">Real-time stock tracking with automatic low-stock alerts and reorder suggestions before your kitchen runs dry.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📋</div>
-      <div class="feature-title">Purchase Orders</div>
-      <div class="feature-desc">Create and submit digital purchase orders. Suppliers confirm, dispatch, and update delivery status in one place.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">Financial Reports</div>
-      <div class="feature-desc">Automated COGS calculations, wastage tracking, supplier spend summaries, and profit/loss reports. Export to CSV.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔔</div>
-      <div class="feature-title">Smart Notifications</div>
-      <div class="feature-desc">Instant alerts for low stock, late deliveries, order confirmations, and supplier price changes.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔐</div>
-      <div class="feature-title">Role-Based Access</div>
-      <div class="feature-desc">Separate secure portals for Managers and Suppliers. Each role sees only what they need.</div>
-    </div>
-  </section>
+  <!-- Banner -->
+  <div class="border-y-[3px] border-gold bg-brand py-8 text-center font-display text-[28px]
+              tracking-[3px] text-white">
+    <i class=""></i> FRESH INGREDIENTS · FAST SERVICE · BIG FLAVOUR
+    <i class=""></i>
+  </div>
 
-  <footer class="home-footer">
-    &copy; 2026 Big Jo's Restaurant · DUT Financial Accounting 2 Project
+  <!-- Features -->
+  <div class="py-10 text-center px-5">
+    <h2 class="font-display text-[40px] tracking-[2px] text-brand">Everything You Need</h2>
+    <p class="mt-1.5 text-[20px] font-semibold text-muted">Built specifically for Big Jo's kitchen operations</p>
+  </div>
+
+  <div class="mx-auto mb-[60px] grid max-w-[1200px] gap-5 px-[60px]"
+       style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+
+    <div class="feature-card relative overflow-hidden rounded-[14px] border border-warm bg-white p-7
+                transition-all duration-200 hover:border-brand hover:shadow-[0_6px_24px_rgba(200,16,46,.12)] hover:-translate-y-[3px]">
+      <div class="mb-3 text-[28px] text-brand"><i class="fa-solid fa-truck"></i></div>
+      <div class="font-display text-[30px] tracking-[1px] text-ink mb-2">Supplier Directory</div>
+      <div class="text-[20px] leading-[1.7] font-semibold text-muted">
+        Browse and compare multiple suppliers by price, rating, and delivery speed.
+        End single-supplier dependency.
+      </div>
+    </div>
+
+    <div class="feature-card relative overflow-hidden rounded-[14px] border border-warm bg-white p-7
+                transition-all duration-200 hover:border-brand hover:shadow-[0_6px_24px_rgba(200,16,46,.12)] hover:-translate-y-[3px]">
+      <div class="mb-3 text-[28px] text-brand"><i class="fa-solid fa-boxes-stacked"></i></div>
+      <div class="font-display text-[30px] tracking-[1px] text-ink mb-2">Inventory Automation</div>
+      <div class="text-[20px] leading-[1.7] font-semibold text-muted">
+        Real-time stock tracking with automatic low-stock alerts and reorder suggestions
+        before your kitchen runs dry.
+      </div>
+    </div>
+
+    <div class="feature-card relative overflow-hidden rounded-[14px] border border-warm bg-white p-7
+                transition-all duration-200 hover:border-brand hover:shadow-[0_6px_24px_rgba(200,16,46,.12)] hover:-translate-y-[3px]">
+      <div class="mb-3 text-[28px] text-brand"><i class="fa-solid fa-file-invoice"></i></div>
+      <div class="font-display text-[30px] tracking-[1px] text-ink mb-2">Purchase Orders</div>
+      <div class="text-[20px] leading-[1.7] font-semibold text-muted">
+        Create and submit digital purchase orders. Suppliers confirm, dispatch, and update
+        delivery status in one place.
+      </div>
+    </div>
+
+    <div class="feature-card relative overflow-hidden rounded-[14px] border border-warm bg-white p-7
+                transition-all duration-200 hover:border-brand hover:shadow-[0_6px_24px_rgba(200,16,46,.12)] hover:-translate-y-[3px]">
+      <div class="mb-3 text-[28px] text-brand"><i class="fa-solid fa-chart-line"></i></div>
+      <div class="font-display text-[30px] tracking-[1px] text-ink mb-2">Financial Reports</div>
+      <div class="text-[20px] leading-[1.7] font-semibold text-muted">
+        Automated COGS calculations, wastage tracking, supplier spend summaries, and
+        profit/loss reports. Export to CSV.
+      </div>
+    </div>
+
+    <div class="feature-card relative overflow-hidden rounded-[14px] border border-warm bg-white p-7
+                transition-all duration-200 hover:border-brand hover:shadow-[0_6px_24px_rgba(200,16,46,.12)] hover:-translate-y-[3px]">
+      <div class="mb-3 text-[28px] text-brand"><i class="fa-solid fa-bell"></i></div>
+      <div class="font-display text-[30px] tracking-[1px] text-ink mb-2">Smart Notifications</div>
+      <div class="text-[20px] leading-[1.7] font-semibold text-muted">
+        Instant alerts for low stock, late deliveries, order confirmations, and supplier
+        price changes.
+      </div>
+    </div>
+
+    <div class="feature-card relative overflow-hidden rounded-[14px] border border-warm bg-white p-7
+                transition-all duration-200 hover:border-brand hover:shadow-[0_6px_24px_rgba(200,16,46,.12)] hover:-translate-y-[3px]">
+      <div class="mb-3 text-[28px] text-brand"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="font-display text-[30px] tracking-[1px] text-ink mb-2">Role-Based Access</div>
+      <div class="text-[20px] leading-[1.7] font-semibold text-muted">
+        Separate secure portals for Managers and Suppliers. Each role sees only what
+        they need.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-warm bg-white py-7 text-center text-[13px] font-semibold text-muted">
+    &copy; 2026 Big Jo's Restaurant &nbsp;·&nbsp; DUT Financial Accounting  Project
   </footer>
+
 </div>
 {% endblock %}

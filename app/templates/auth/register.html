@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}Register{% endblock %}
 {% block body %}
-<div class="auth-page">
-  <div class="auth-card" style="max-width:520px;">
-    <div class="auth-logo">Big Jo's</div>
-    <div class="auth-subtitle">Create your account</div>
+<div class="flex min-h-screen items-center justify-center bg-cream px-5 py-10"
+     style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23c8102e\' fill-opacity=\'0.035\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')">
+
+  <div class="relative w-full max-w-[520px] overflow-hidden rounded-2xl border-2 border-warm
+              bg-white p-11 shadow-[0_20px_60px_rgba(200,16,46,.12)]">
+    <div class="absolute inset-x-0 top-0 h-[5px]"
+         style="background:linear-gradient(90deg,#c8102e,#f5a800,#c8102e)"></div>
+
+    <div class="mb-1 text-center font-display text-[36px] tracking-[3px] text-brand">Big Jo's</div>
+    <div class="mb-8 text-center text-[13px] font-semibold text-muted">Create your account</div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for category, message in messages %}
@@ -35,7 +41,7 @@
         {{ form.role(class="form-control") }}
       </div>
 
-      <div id="supplier-fields" style="display:none;">
+      <div id="supplier-fields" class="hidden">
         <div class="form-group">
           <label class="form-label">Company Name</label>
           {{ form.company_name(class="form-control", placeholder="ABC Fresh Produce") }}
@@ -59,21 +65,23 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">
+      <button type="submit" class="btn btn-primary mt-2 w-full justify-center">
         <i class="fa-solid fa-user-plus"></i> Create Account
       </button>
     </form>
 
-    <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:20px;">
-      Already registered? <a href="{{ url_for('auth.login') }}" style="color:var(--accent);">Login here</a>
+    <p class="mt-5 text-center text-[13px] text-muted">
+      Already registered?
+      <a href="{{ url_for('auth.login') }}" class="text-brand hover:text-brand2">Login here</a>
     </p>
   </div>
+
 </div>
 <script>
   const roleSelect = document.querySelector('select[name="role"]');
   const supplierFields = document.getElementById('supplier-fields');
   function toggleFields() {
-    supplierFields.style.display = roleSelect.value === 'supplier' ? 'block' : 'none';
+    supplierFields.classList.toggle('hidden', roleSelect.value !== 'supplier');
   }
   roleSelect.addEventListener('change', toggleFields);
   toggleFields();

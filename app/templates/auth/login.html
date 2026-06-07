@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 {% block body %}
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-logo">Big Jo's</div>
-    <div class="auth-subtitle">Sign in to your account</div>
+
+<div class="flex min-h-screen items-center justify-center bg-cream px-5 py-10"
+     style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23c8102e\' fill-opacity=\'0.035\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')">
+
+  <div class="relative w-full max-w-[460px] overflow-hidden rounded-2xl border-2 border-warm
+              bg-white p-11 shadow-[0_20px_60px_rgba(200,16,46,.12)]">
+    <div class="absolute inset-x-0 top-0 h-[5px]"
+         style="background:linear-gradient(90deg,#c8102e,#f5a800,#c8102e)"></div>
+
+    <div class="mb-1 text-center font-display text-[36px] tracking-[3px] text-brand">Big Jo's</div>
+    <div class="mb-8 text-center text-[13px] font-semibold text-muted">Sign in to your account</div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for category, message in messages %}
@@ -24,17 +31,19 @@
         {{ form.password(class="form-control", placeholder="••••••••") }}
         {% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">
+      <button type="submit" class="btn btn-primary mt-2 w-full justify-center">
         <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
       </button>
     </form>
 
-    <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:20px;">
-      No account? <a href="{{ url_for('auth.register') }}" style="color:var(--accent);">Register here</a>
+    <p class="mt-5 text-center text-[13px] text-muted">
+      No account?
+      <a href="{{ url_for('auth.register') }}" class="text-brand hover:text-brand2">Register here</a>
     </p>
-    <p style="text-align:center;margin-top:8px;">
-      <a href="{{ url_for('main.home') }}" style="color:var(--muted);font-size:12px;">← Back to home</a>
+    <p class="mt-2 text-center">
+      <a href="{{ url_for('main.home') }}" class="text-xs text-muted hover:text-ink">Back to home</a>
     </p>
   </div>
+
 </div>
 {% endblock %}

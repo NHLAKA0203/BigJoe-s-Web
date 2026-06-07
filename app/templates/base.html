@@ -4,42 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Big Jo's{% endblock %} — Supplier Management</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            ink: '#0d1117',
-            panel: '#161b22',
-            panel2: '#1f2937',
-            line: '#30363d',
-            gold: '#d4a843',
-            gold2: '#e8c673',
-            good: '#2ea043',
-            danger: '#da3633',
-            info: '#388bfd'
+            cream:   '#fdf6ee',
+            cream2:  '#fff8f0',
+            warm:    '#e8d5b7',
+            brand:   '#c8102e',
+            brand2:  '#e8192e',
+            gold:    '#f5a800',
+            gold2:   '#ffc93c',
+            ink:     '#1a0a00',
+            muted:   '#1a0a00',
+            success: '#1a8a3a',
+            info:    '#1565c0',
           },
           fontFamily: {
-            sans: ['DM Sans', 'sans-serif'],
-            serif: ['DM Serif Display', 'serif']
+            sans:    ['Nunito', 'sans-serif'],
+            display: ['"Bebas Neue"', 'cursive'],
           },
           boxShadow: {
-            soft: '0 4px 24px rgba(0,0,0,.35)'
-          }
+            brand:      '0 4px 24px rgba(200,16,46,.10)',
+            'brand-lg': '0 8px 40px rgba(200,16,46,.15)',
+          },
         }
       }
     }
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-cream text-ink font-sans text-[15px] leading-relaxed">
 
 {% block body %}{% endblock %}
 
 <script>
-  // Auto-dismiss alerts
   setTimeout(() => {
     document.querySelectorAll('.alert').forEach(el => {
       el.style.transition = 'opacity .5s';
