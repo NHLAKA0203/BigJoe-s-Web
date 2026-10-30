@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, FloatField, IntegerField, \
     TextAreaField, BooleanField, DateField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange, Optional
+from wtforms.validators import DataRequired, Email, EqualTo, InputRequired, Length, NumberRange, Optional
+from app.models import STANDARD_VAT_RATE, ZERO_VAT_RATE
 
 
 class LoginForm(FlaskForm):
@@ -31,6 +32,9 @@ class ProductForm(FlaskForm):
                                   choices=[('kg', 'kg'), ('unit', 'unit'), ('litre', 'litre'),
                                            ('bag', 'bag'), ('crate', 'crate')])
     shelf_life_days = IntegerField('Shelf Life (days)', validators=[Optional()])
+    vat_rate = SelectField('VAT Treatment', coerce=float, default=STANDARD_VAT_RATE,
+                           choices=[(STANDARD_VAT_RATE, 'Standard-rated (15%)'),
+                                    (ZERO_VAT_RATE, 'Zero-rated (0%)')])
     available = BooleanField('Available', default=True)
     submit = SubmitField('Save Product')
 
@@ -53,9 +57,27 @@ class OrderConfirmForm(FlaskForm):
 
 
 class InventoryUpdateForm(FlaskForm):
-    qty_on_hand = FloatField('Quantity On Hand', validators=[DataRequired(), NumberRange(min=0)])
-    reorder_level = FloatField('Reorder Level', validators=[DataRequired(), NumberRange(min=0)])
+    qty_on_hand = FloatField('Counted Quantity', validators=[InputRequired(), NumberRange(min=0)])
+    reorder_level = FloatField('Reorder Level', validators=[InputRequired(), NumberRange(min=0)])
     submit = SubmitField('Update')
+
+
+class UsageForm(FlaskForm):
+    quantity = FloatField('Quantity Used', validators=[InputRequired(), NumberRange(min=0.001)])
+    submit = SubmitField('Record Usage')
+
+
+class WriteDownForm(FlaskForm):
+    batch_id = SelectField('Batch', coerce=int, validators=[DataRequired()])
+    quantity = FloatField('Quantity Affected', validators=[InputRequired(), NumberRange(min=0.001)])
+    nrv_per_unit = FloatField('NRV per Unit (R)', validators=[InputRequired(), NumberRange(min=0)])
+    reason = StringField('Reason', validators=[DataRequired(), Length(max=200)])
+    submit = SubmitField('Post Write-down')
+
+
+class PaymentForm(FlaskForm):
+    method = SelectField('Method', choices=[('EFT', 'EFT'), ('Cash', 'Cash'), ('Card', 'Card')])
+    submit = SubmitField('Pay')
 
 
 class ReportForm(FlaskForm):

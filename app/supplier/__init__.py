@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
 from app.models import db, Supplier, Product, Inventory, PurchaseOrder, Notification
-from app.models import utc_now
 from app.forms import ProductForm, OrderConfirmForm
+from app.accounting import receive_order
 
 bp = Blueprint('supplier', __name__, url_prefix='/supplier')
 
@@ -71,6 +71,7 @@ def new_product():
             unit_cost=form.unit_cost.data,
             unit_of_measure=form.unit_of_measure.data,
             shelf_life_days=form.shelf_life_days.data,
+            vat_rate=form.vat_rate.data,
             available=form.available.data
         )
         db.session.add(product)
@@ -95,6 +96,7 @@ def edit_product(product_id):
         product.unit_cost = form.unit_cost.data
         product.unit_of_measure = form.unit_of_measure.data
         product.shelf_life_days = form.shelf_life_days.data
+        product.vat_rate = form.vat_rate.data
         product.available = form.available.data
         db.session.commit()
         flash('Product updated.', 'success')
@@ -107,6 +109,16 @@ def edit_product(product_id):
 def delete_product(product_id):
     supplier = get_supplier()
     product = Product.query.filter_by(id=product_id, supplier_id=supplier.id).first_or_404()
+    has_history = product.order_lines.count() > 0 or (
+        product.inventory is not None and product.inventory.batches.count() > 0)
+    if has_history:
+        # Orders and stock records must survive for the accounting trail
+        product.available = False
+        db.session.commit()
+        flash('Product has order or stock history, so it was marked unavailable instead.', 'info')
+        return redirect(url_for('supplier.products'))
+    if product.inventory is not None:
+        db.session.delete(product.inventory)
     db.session.delete(product)
     db.session.commit()
     flash('Product removed.', 'info')
@@ -143,6 +155,9 @@ def confirm_order(order_id):
     order = PurchaseOrder.query.filter_by(
         id=order_id, supplier_id=supplier.id).first_or_404()
     form = OrderConfirmForm()
+    if order.status != 'Submitted':
+        flash(f'Order #{order.id} is {order.status} and cannot be confirmed.', 'warning')
+        return redirect(url_for('supplier.orders'))
     if form.validate_on_submit():
         order.status = 'Confirmed'
         order.delivery_date = datetime.combine(
@@ -166,6 +181,9 @@ def reject_order(order_id):
     supplier = get_supplier()
     order = PurchaseOrder.query.filter_by(
         id=order_id, supplier_id=supplier.id).first_or_404()
+    if order.status != 'Submitted':
+        flash(f'Order #{order.id} is {order.status} and cannot be rejected.', 'warning')
+        return redirect(url_for('supplier.orders'))
     order.status = 'Rejected'
     db.session.commit()
     notif = Notification(
@@ -186,23 +204,22 @@ def update_status(order_id):
     order = PurchaseOrder.query.filter_by(
         id=order_id, supplier_id=supplier.id).first_or_404()
     new_status = request.form.get('status')
-    valid = ['Confirmed', 'Dispatched', 'Delivered']
-    if new_status in valid:
-        order.status = new_status
+    next_status = {'Confirmed': 'Dispatched', 'Dispatched': 'Delivered'}
+    if next_status.get(order.status) == new_status:
         if new_status == 'Delivered':
-            # Auto-update inventory
-            for line in order.lines:
-                inv = Inventory.query.filter_by(product_id=line.product_id).first()
-                if inv:
-                    inv.qty_on_hand += line.quantity
-                    inv.last_restocked = utc_now()
+            # Adds FIFO batches to inventory and posts the purchase journal
+            receive_order(order)
             notif = Notification(
                 user_id=order.manager_id,
                 message=f'Order #{order.id} from {supplier.company_name} has been delivered. '
-                        f'Inventory updated automatically.',
+                        f'Inventory and Trade Payables updated automatically.',
                 type='success'
             )
             db.session.add(notif)
+        else:
+            order.status = new_status
         db.session.commit()
         flash(f'Order status updated to {new_status}.', 'success')
+    else:
+        flash(f'Order #{order.id} cannot move from {order.status} to {new_status}.', 'warning')
     return redirect(url_for('supplier.orders'))

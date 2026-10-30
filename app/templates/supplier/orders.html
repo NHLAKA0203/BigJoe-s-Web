@@ -21,13 +21,13 @@
 <div class="card">
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Order #</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+      <thead><tr><th>Order #</th><th>Date</th><th>Total (incl. VAT)</th><th>Status</th><th></th></tr></thead>
       <tbody>
         {% for order in orders %}
         <tr>
           <td><strong>#{{ order.id }}</strong></td>
           <td>{{ order.order_date.strftime('%d %b %Y') }}</td>
-          <td style="font-weight:600;">R {{ "%.2f"|format(order.total_amount) }}</td>
+          <td style="font-weight:600;">R {{ "%.2f"|format(order.gross_amount) }}</td>
           <td><span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></td>
           <td>
             <a href="{{ url_for('supplier.order_detail', order_id=order.id) }}" class="btn btn-outline btn-sm">

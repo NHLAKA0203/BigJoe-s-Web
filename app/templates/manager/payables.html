@@ -1,0 +1,59 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}Trade Payables{% endblock %}
+{% block page_title %}Trade Payables{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Trade Payables</div>
+    <div class="page-subtitle">What Big Jo's owes suppliers for goods received, including VAT</div>
+  </div>
+</div>
+
+<div class="stat-grid" style="margin-bottom:24px;">
+  <div class="stat-card">
+    <div class="stat-label">Total Owing</div>
+    <div class="stat-value" style="font-size:24px;">R {{ "%.2f"|format(total) }}</div>
+  </div>
+  {% for name, amount in by_supplier.items() %}
+  <div class="stat-card blue">
+    <div class="stat-label">{{ name }}</div>
+    <div class="stat-value" style="font-size:24px;">R {{ "%.2f"|format(amount) }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-title">Unpaid Invoices</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Order</th><th>Supplier</th><th>Received</th><th>Age</th><th>Excl. VAT</th><th>VAT</th><th>Owing</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td><a href="{{ url_for('manager.order_detail', order_id=row.order.id) }}" style="color:var(--accent)">#{{ row.order.id }}</a></td>
+          <td>{{ row.order.supplier.company_name }}</td>
+          <td>{{ row.order.received_at.strftime('%d %b %Y') }}</td>
+          <td>{{ row.age }} days</td>
+          <td>R {{ "%.2f"|format(row.order.total_amount) }}</td>
+          <td>R {{ "%.2f"|format(row.order.vat_amount) }}</td>
+          <td style="font-weight:600;">R {{ "%.2f"|format(row.order.gross_amount) }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('manager.pay_order', order_id=row.order.id) }}" style="display:flex;gap:6px;">
+              {{ form.hidden_tag() }}
+              {{ form.method(class="form-control", style="width:auto;padding:4px 8px;") }}
+              <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Pay this invoice in full?')">
+                <i class="fa-solid fa-money-bill-transfer"></i> Pay
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px;">Nothing owing to suppliers.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

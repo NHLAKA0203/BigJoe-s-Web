@@ -31,7 +31,7 @@
           <th>Supplier</th>
           <th>Date</th>
           <th>Delivery</th>
-          <th>Total</th>
+          <th>Total (incl. VAT)</th>
           <th>Status</th>
           <th></th>
         </tr>
@@ -49,7 +49,7 @@
               <span style="color:var(--muted)">TBC</span>
             {% endif %}
           </td>
-          <td style="font-weight:600;">R {{ "%.2f"|format(order.total_amount) }}</td>
+          <td style="font-weight:600;">R {{ "%.2f"|format(order.gross_amount) }}</td>
           <td><span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></td>
           <td>
             <a href="{{ url_for('manager.order_detail', order_id=order.id) }}" class="btn btn-outline btn-sm">

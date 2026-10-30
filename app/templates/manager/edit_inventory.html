@@ -3,16 +3,20 @@
 {% block page_title %}Edit Inventory{% endblock %}
 {% block content %}
 <div style="margin-bottom:20px;">
-  <a href="{{ url_for('manager.inventory') }}" class="btn btn-outline btn-sm">
-    <i class="fa-solid fa-arrow-left"></i> Back to Inventory
+  <a href="{{ url_for('manager.inventory_detail', item_id=item.id) }}" class="btn btn-outline btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back to {{ item.product.name }}
   </a>
 </div>
 <div class="card" style="max-width:480px;">
-  <div class="card-title">Update: {{ item.product.name }}</div>
+  <div class="card-title">Stock Count: {{ item.product.name }}</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+    Enter what was physically counted. Any difference from the books
+    ({{ item.qty_on_hand }} {{ item.product.unit_of_measure }}) is posted to Cost of Sales.
+  </p>
   <form method="POST">
     {{ form.hidden_tag() }}
     <div class="form-group">
-      <label class="form-label">Quantity On Hand ({{ item.product.unit_of_measure }})</label>
+      <label class="form-label">Counted Quantity ({{ item.product.unit_of_measure }})</label>
       {{ form.qty_on_hand(class="form-control") }}
       {% for e in form.qty_on_hand.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
     </div>
