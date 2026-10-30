@@ -1,0 +1,108 @@
+{% extends 'shared/dashboard_layout.html' %}
+{% block title %}{{ item.product.name }}{% endblock %}
+{% block page_title %}{{ item.product.name }}{% endblock %}
+{% block content %}
+<div style="margin-bottom:20px;display:flex;gap:8px;">
+  <a href="{{ url_for('manager.inventory') }}" class="btn btn-outline btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back to Inventory
+  </a>
+  <a href="{{ url_for('manager.edit_inventory', item_id=item.id) }}" class="btn btn-outline btn-sm">
+    <i class="fa-solid fa-clipboard-check"></i> Stock Count
+  </a>
+</div>
+
+<div class="stat-grid" style="margin-bottom:24px;">
+  <div class="stat-card">
+    <div class="stat-label">On Hand</div>
+    <div class="stat-value" style="font-size:24px;">{{ item.qty_on_hand }} {{ item.product.unit_of_measure }}</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-label">Carrying Value</div>
+    <div class="stat-value" style="font-size:24px;">R {{ "%.2f"|format(item.carrying_value) }}</div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-label">Shelf Life</div>
+    <div class="stat-value" style="font-size:24px;">{{ item.product.shelf_life_days or '—' }}{% if item.product.shelf_life_days %} days{% endif %}</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-title">FIFO Batches (oldest used first)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Received</th><th>Expires</th><th>Remaining</th><th>Cost / Unit</th><th>Carrying / Unit</th><th>Carrying Value</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for b in item.open_batches %}
+        <tr {% if b.is_expired() %}class="low-stock"{% endif %}>
+          <td>{{ b.received_at.strftime('%d %b %Y') }}</td>
+          <td>{{ b.expiry_date.strftime('%d %b %Y') if b.expiry_date else '—' }}</td>
+          <td>{{ b.qty_remaining }} {{ item.product.unit_of_measure }}</td>
+          <td>R {{ "%.2f"|format(b.unit_cost) }}</td>
+          <td>R {{ "%.2f"|format(b.carrying_unit_cost) }}</td>
+          <td style="font-weight:600;">R {{ "%.2f"|format(b.carrying_value) }}</td>
+          <td>
+            {% if b.is_expired() %}<span class="pill pill-warning">Expired</span>
+            {% elif b.is_written_down %}<span class="pill pill-info">At NRV</span>
+            {% else %}<span class="pill pill-confirmed">At cost</span>{% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px;">No stock on hand.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if item.open_batches %}
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;">
+  <div class="card">
+    <div class="card-title">Record Kitchen Usage</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Dr Cost of Sales / Cr Inventory at FIFO cost.</p>
+    <form method="POST" action="{{ url_for('manager.record_usage', item_id=item.id) }}">
+      {{ usage_form.hidden_tag() }}
+      <div class="form-group">
+        <label class="form-label">Quantity Used ({{ item.product.unit_of_measure }})</label>
+        {{ usage_form.quantity(class="form-control", placeholder="e.g. 5") }}
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm">
+        <i class="fa-solid fa-utensils"></i> Record Usage
+      </button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Write Down to Net Realisable Value</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">
+      Dr Inventory Write-downs / Cr Inventory (IAS 2.34). Enter an NRV of 0 for spoiled stock: it is removed from the count.
+    </p>
+    <form method="POST" action="{{ url_for('manager.write_down', item_id=item.id) }}">
+      {{ write_down_form.hidden_tag() }}
+      <div class="form-group">
+        <label class="form-label">Batch</label>
+        {{ write_down_form.batch_id(class="form-control") }}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Quantity Affected</label>
+          {{ write_down_form.quantity(class="form-control") }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">NRV per Unit (R)</label>
+          {{ write_down_form.nrv_per_unit(class="form-control", placeholder="0.00") }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reason</label>
+        {{ write_down_form.reason(class="form-control", placeholder="e.g. Spoiled in cold room") }}
+      </div>
+      <button type="submit" class="btn btn-danger btn-sm">
+        <i class="fa-solid fa-arrow-trend-down"></i> Post Write-down
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -55,6 +55,18 @@
                 {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
         <span class="w-4 text-center"><i class="fa-solid fa-chart-line"></i></span> Reports
       </a>
+      <a href="{{ url_for('manager.payables') }}"
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'payables' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
+        <span class="w-4 text-center"><i class="fa-solid fa-money-bill-transfer"></i></span> Trade Payables
+      </a>
+      <a href="{{ url_for('manager.journal') }}"
+         class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
+                {% if 'journal' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]
+                {% else %}text-white/85 hover:bg-white/20 hover:text-white hover:translate-x-[3px]{% endif %}">
+        <span class="w-4 text-center"><i class="fa-solid fa-book"></i></span> Journal &amp; Trial Balance
+      </a>
       <a href="{{ url_for('manager.notifications') }}"
          class="flex items-center gap-2.5 rounded-[10px] px-3.5 py-2.5 text-[14px] font-semibold transition-all duration-[180ms]
                 {% if 'notifications' in request.endpoint %}bg-gold text-ink shadow-[0_3px_10px_rgba(245,168,0,.4)]

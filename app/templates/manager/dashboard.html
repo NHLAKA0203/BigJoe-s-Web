@@ -27,7 +27,17 @@
   <div class="stat-card green">
     <div class="stat-label">Monthly Spend</div>
     <div class="stat-value" style="font-size:24px;">R {{ "%.2f"|format(monthly_spend) }}</div>
-    <div class="stat-sub">Delivered orders this month</div>
+    <div class="stat-sub">Goods received this month, excl. VAT</div>
+  </div>
+  <div class="stat-card gold">
+    <div class="stat-label">Inventory Value</div>
+    <div class="stat-value" style="font-size:24px;">R {{ "%.2f"|format(inventory_value) }}</div>
+    <div class="stat-sub">Lower of FIFO cost and NRV</div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-label">Trade Payables</div>
+    <div class="stat-value" style="font-size:24px;">R {{ "%.2f"|format(payables_total) }}</div>
+    <div class="stat-sub">Owed to suppliers, incl. VAT</div>
   </div>
 </div>
 
@@ -75,7 +85,7 @@
             <tr>
               <td><a href="{{ url_for('manager.order_detail', order_id=order.id) }}" style="color:var(--accent)">#{{ order.id }}</a></td>
               <td>{{ order.supplier.company_name }}</td>
-              <td>R {{ "%.2f"|format(order.total_amount) }}</td>
+              <td>R {{ "%.2f"|format(order.gross_amount) }}</td>
               <td><span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></td>
             </tr>
             {% endfor %}

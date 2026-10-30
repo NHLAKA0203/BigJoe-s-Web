@@ -42,7 +42,7 @@
           <tr>
             <th>#</th>
             <th>Date</th>
-            <th>Total</th>
+            <th>Total (incl. VAT)</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -54,7 +54,7 @@
                  class="font-semibold text-brand hover:text-brand2">#{{ order.id }}</a>
             </td>
             <td>{{ order.order_date.strftime('%d %b %Y') }}</td>
-            <td class="font-semibold">R {{ "%.2f"|format(order.total_amount) }}</td>
+            <td class="font-semibold">R {{ "%.2f"|format(order.gross_amount) }}</td>
             <td><span class="pill pill-{{ order.status|lower }}">{{ order.status }}</span></td>
           </tr>
           {% endfor %}
